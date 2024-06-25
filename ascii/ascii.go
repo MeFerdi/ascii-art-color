@@ -30,7 +30,6 @@ func loadBanner(filename string) {
 	// Open the file
 	file, err := os.Open(filePath)
 	if err != nil {
-
 		fmt.Printf("Error opening file %s: %v\n", filePath, err)
 		return
 	}
@@ -69,7 +68,6 @@ func GetLetterArray(char rune, bannerStyle string) []string {
 	// Check if the banner file exists
 	banner, ok := bannerMap[bannerStyle]
 	if !ok {
-
 		fmt.Println("File doesn't exist")
 		os.Exit(1)
 	}
@@ -93,14 +91,16 @@ func GetLetterArray(char rune, bannerStyle string) []string {
 }
 
 // PrintAscii prints the ASCII art representation of a given string
-// PrintAscii prints the ASCII art representation of a given string
 func PrintAscii(str, bannerStyle, color, substring string) {
+	// Get the ANSI escape code for the specified color
+	colorCode := GetColor(color)
+
 	lines := strings.Split(str, "\n")
 	for _, line := range lines {
 		if substring == "" {
-			fmt.Printf("%s%s%s\n", color, line, ColorRed)
+			fmt.Printf("%s%s%s\n", colorCode, line, ColorReset)
 		} else {
-			coloredLine := colorSubstring(line, substring, color)
+			coloredLine := colorSubstring(line, substring, colorCode)
 			fmt.Println(coloredLine)
 		}
 	}
@@ -134,5 +134,27 @@ func PrintAscii(str, bannerStyle, color, substring string) {
 }
 
 func colorSubstring(line, substring, color string) string {
-	return strings.Replace(line, substring, fmt.Sprintf("%s%s%s", color, substring, color), -1)
+	return strings.Replace(line, substring, fmt.Sprintf("%s%s%s", color, substring, ColorReset), -1)
+}
+
+// GetColor returns the ANSI escape code for the specified color
+func GetColor(color string) string {
+	switch color {
+	case "red":
+		return "\033[1;31m"
+	case "green":
+		return "\033[1;32m"
+	case "yellow":
+		return "\033[1;33m"
+	case "blue":
+		return "\033[1;34m"
+	case "magenta":
+		return "\033[1;35m"
+	case "cyan":
+		return "\033[1;36m"
+	case "white":
+		return "\033[1;37m"
+	default:
+		return "\033[0m" // Reset color
+	}
 }
