@@ -25,13 +25,14 @@ func main() {
 	}
 
 	// Get the substring to be colored from the command-line arguments
+	// Get the substring to be colored from the command-line arguments
 	var substring string
 	if *substringFlag != "" {
 		substring = *substringFlag
 	} else {
 		words := strings.Split(inputString, " ")
 		for _, word := range words {
-			if strings.Contains(word, "kit") {
+			if strings.Contains(strings.ToLower(word), strings.ToLower(*substringFlag)) {
 				substring = word
 				break
 			}
