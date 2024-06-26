@@ -99,7 +99,7 @@ func PrintAscii(str, bannerStyle, color, substring string) {
 	printAsciiArt(str, bannerStyle, colorCode, substring)
 
 	// Print the colored substring
-	if substring != "" {
+	if substring == "" {
 		coloredStr := colorSubstring(str, substring, colorCode)
 		fmt.Println(coloredStr)
 	}
