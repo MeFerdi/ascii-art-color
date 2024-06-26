@@ -2,7 +2,7 @@ package color
 
 // ANSI color codes
 const (
-	ColorReset  = "\u001b[0m"
+	// ColorReset  = "\u001b[0m"
 	ColorRed    = "\u001b[31m"
 	ColorGreen  = "\u001b[32m"
 	ColorYellow = "\u001b[33m"

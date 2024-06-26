@@ -8,13 +8,16 @@ import (
 	"strings"
 )
 
+// ColorReset is the ANSI escape code to reset the color
+const ColorReset = "\033[0m"
+
 // bannerMap is a map that stores the ASCII art for different banner files
-var bannerMap map[string]string
+var bannerMap map[string][]string
 
 // init initializes the bannerMap and loads the ASCII art from the banner files
 func init() {
 	// Initialize the bannerMap
-	bannerMap = make(map[string]string)
+	bannerMap = make(map[string][]string)
 
 	// Load the ASCII art from the banner files
 	loadBanner("standard.txt")
@@ -59,21 +62,18 @@ func loadBanner(filename string) {
 		return
 	}
 
-	// Join the lines with newline characters and store it in the bannerMap
-	bannerMap[filename] = strings.Join(lines, "\n")
+	// Store the lines in the bannerMap
+	bannerMap[filename] = lines
 }
 
 // GetLetterArray retrieves the ASCII art representation for a given character from the specified banner file
 func GetLetterArray(char rune, bannerStyle string) []string {
 	// Check if the banner file exists
-	banner, ok := bannerMap[bannerStyle]
+	alphabet, ok := bannerMap[bannerStyle]
 	if !ok {
 		fmt.Println("File doesn't exist")
 		os.Exit(1)
 	}
-
-	// Split the banner into lines
-	alphabet := strings.Split(banner, "\n")
 
 	// Calculate the starting index for the character
 	start := (int(char) - 32) * 9
@@ -95,16 +95,18 @@ func PrintAscii(str, bannerStyle, color, substring string) {
 	// Get the ANSI escape code for the specified color
 	colorCode := GetColor(color)
 
-	lines := strings.Split(str, "\n")
-	for _, line := range lines {
-		if substring == "" {
-			fmt.Printf("%s%s%s\n", colorCode, line, ColorReset)
-		} else {
-			coloredLine := colorSubstring(line, substring, colorCode)
-			fmt.Println(coloredLine)
-		}
-	}
+	// Print the ASCII art
+	printAsciiArt(str, bannerStyle, colorCode, substring)
 
+	// Print the colored substring
+	if substring != "" {
+		coloredStr := colorSubstring(str, substring, colorCode)
+		fmt.Println(coloredStr)
+	}
+}
+
+func printAsciiArt(str, bannerStyle, color string, substring string) {
+	lines := strings.Split(str, "\n")
 	letters := [][]string{}
 	for _, line := range lines {
 		for _, letter := range line {
@@ -127,14 +129,14 @@ func PrintAscii(str, bannerStyle, color, substring string) {
 				fmt.Println("Error: File content modified")
 				return
 			}
-			fmt.Print(letter[i])
+			fmt.Print(color + letter[i] + ColorReset)
 		}
 		fmt.Println()
 	}
 }
 
 func colorSubstring(line, substring, color string) string {
-	return strings.Replace(line, substring, fmt.Sprintf("%s%s%s", color, substring, ColorReset), -1)
+	return strings.Replace(line, substring, color+substring+ColorReset, -1)
 }
 
 // GetColor returns the ANSI escape code for the specified color
@@ -155,6 +157,6 @@ func GetColor(color string) string {
 	case "white":
 		return "\033[1;37m"
 	default:
-		return "\033[0m" // Reset color
+		return ColorReset // Reset color
 	}
 }
