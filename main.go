@@ -11,7 +11,7 @@ import (
 func main() {
 	colorFlag := flag.String("color", "default", "Color to apply to the ASCII art")
 	substringFlag := flag.String("substring", "", "Substring to be colored")
-	bannerFlag := flag.String("banner", "standard", "Banner style to use")
+	bannerFlag := flag.String("banner", "standard", "Banner style to use (without .txt extension)")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
@@ -38,9 +38,9 @@ func main() {
 		}
 	}
 
-	// Construct the banner file name
+	// Construct the banner file name by appending the ".txt" extension
 	bannerFile := *bannerFlag + ".txt"
 
 	// Call the PrintAscii function from the color package with the provided options
-	color.PrintAscii(inputString, bannerFile, *colorFlag, substring)
+	color.PrintAsciiArt(inputString, bannerFile, *colorFlag, substring)
 }
