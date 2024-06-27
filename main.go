@@ -15,7 +15,8 @@ func main() {
 	flag.Parse()
 
 	if flag.NArg() < 1 {
-		fmt.Println("Usage: go run . --color=<color> --banner=<banner> [--substring=<substring>] <text>")
+		fmt.Println("Usage: go run . [OPTION] [STRING]")
+		fmt.Println("\nEX: go run . --color=<color> <substring to be colored> \"something\"")
 		return
 	}
 
