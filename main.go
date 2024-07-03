@@ -10,6 +10,7 @@ import (
 func main() {
 	// Define command-line flags
 	colorFlag := flag.String("color", "", "Color to apply to the ASCII art")
+	// substringFlag := flag.String("substring", "", "Substring to be colored")
 	flag.Parse()
 
 	// Get the remaining arguments
@@ -30,13 +31,13 @@ func main() {
 	case 3:
 		// Format: go run . --color=<color> <substring to be colored> "something"
 		// Extract the color and substring values from the flags
+		substringValue := args[1]
 		inputString := args[2]
 		bannerStyle := "standard.txt"
 		colorValue := *colorFlag
-		substringValue := args[1]
-		color.PrintAsciiArt(inputString, bannerStyle, colorValue, substringValue)
+		color.PrintAsciiArt(colorValue, substringValue, inputString, bannerStyle)
 	default:
-		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]")
+		fmt.Println("Usage: go run . [OPTION] [STRING]")
 		fmt.Println("\nEx: go run . --color=<color> <substring to be colored> \"something\"")
 		return
 	}
