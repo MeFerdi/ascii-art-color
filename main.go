@@ -3,45 +3,41 @@ package main
 import (
 	"flag"
 	"fmt"
-	"strings"
 
 	color "color/ascii" // Import the color package from the local directory
 )
 
 func main() {
-	colorFlag := flag.String("color", "default", "Color to apply to the ASCII art")
-	substringFlag := flag.String("substring", "", "Substring to be colored")
-	bannerFlag := flag.String("banner", "standard", "Banner style to use (without .txt extension)")
+	// Define command-line flags
+	colorFlag := flag.String("color", "", "Color to apply to the ASCII art")
 	flag.Parse()
 
-	if flag.NArg() < 1 {
-		fmt.Println("Usage: go run . [OPTION] [STRING]")
-		fmt.Println("\nEX: go run . --color=<color> <substring to be colored> \"something\"")
+	// Get the remaining arguments
+	args := flag.Args()
+
+	// Handle the different command formats
+	switch len(args) {
+	case 2:
+		// Format: go run main.go <string> <banner>
+		inputString := args[0]
+		bannerStyle := args[1] + ".txt"
+		color.PrintAsciiArt(inputString, bannerStyle, "", "")
+	case 1:
+		// Format: go run main.go <string>
+		inputString := args[0]
+		bannerStyle := "standard.txt"
+		color.PrintAsciiArt(inputString, bannerStyle, "", "")
+	case 3:
+		// Format: go run . --color=<color> <substring to be colored> "something"
+		// Extract the color and substring values from the flags
+		inputString := args[2]
+		bannerStyle := "standard.txt"
+		colorValue := *colorFlag
+		substringValue := args[1]
+		color.PrintAsciiArt(inputString, bannerStyle, colorValue, substringValue)
+	default:
+		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]")
+		fmt.Println("\nEx: go run . --color=<color> <substring to be colored> \"something\"")
 		return
 	}
-
-	inputString := strings.Join(flag.Args(), " ")
-	if inputString == "" {
-		return
-	}
-
-	// Get the substring to be colored from the command-line arguments
-	var substring string
-	if *substringFlag != "" {
-		substring = *substringFlag
-	} else {
-		words := strings.Split(inputString, " ")
-		for _, word := range words {
-			if strings.Contains(strings.ToLower(word), strings.ToLower(*substringFlag)) {
-				substring = word
-				break
-			}
-		}
-	}
-
-	// Construct the banner file name by appending the ".txt" extension
-	bannerFile := *bannerFlag + ".txt"
-
-	// Call the PrintAscii function from the color package with the provided options
-	color.PrintAsciiArt(inputString, bannerFile, *colorFlag, substring)
 }

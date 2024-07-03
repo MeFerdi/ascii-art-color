@@ -97,12 +97,6 @@ func PrintAsciiArt(str, bannerStyle, color, substring string) {
 
 	// Print the ASCII art
 	printAsciiArt(str, bannerStyle, colorCode, substring)
-
-	// Print the colored substring
-	if substring == "" {
-		coloredStr := colorSubstring(str, substring, colorCode)
-		fmt.Print(coloredStr)
-	}
 }
 
 func printAsciiArt(str, bannerStyle, color string, substring string) {
@@ -129,7 +123,11 @@ func printAsciiArt(str, bannerStyle, color string, substring string) {
 				fmt.Println("Error: File content modified")
 				return
 			}
-			fmt.Print(color + letter[i] + ColorReset)
+			line := letter[i]
+			if substring != "" {
+				line = colorSubstring(line, substring, color)
+			}
+			fmt.Print(color + line + ColorReset)
 		}
 		fmt.Println()
 	}
@@ -152,11 +150,13 @@ func GetColor(color string) string {
 		return "\033[1;34m"
 	case "magenta":
 		return "\033[1;35m"
+	case "pink":
+		return "\033[1;35m"
 	case "cyan":
 		return "\033[1;36m"
 	case "white":
 		return "\033[1;37m"
 	default:
-		return ColorReset // Reset color
+		return ColorReset
 	}
 }
