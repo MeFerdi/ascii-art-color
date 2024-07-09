@@ -3,42 +3,43 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 
-	color "color/ascii" // Import the color package from the local directory
+	color "color/ascii" // Ensure this path is correct for your local setup
 )
 
 func main() {
 	// Define command-line flags
+	args := os.Args[1:]
 	colorFlag := flag.String("color", "", "Color to apply to the ASCII art")
-	// substringFlag := flag.String("substring", "", "Substring to be colored")
 	flag.Parse()
 
 	// Get the remaining arguments
-	args := flag.Args()
+	// args := flag.Args()
 
 	// Handle the different command formats
-	switch len(args) {
-	case 2:
-		// Format: go run main.go <string> <banner>
-		inputString := args[0]
-		bannerStyle := args[1] + ".txt"
-		color.PrintAsciiArt(inputString, bannerStyle, "", "")
-	case 1:
-		// Format: go run main.go <string>
-		inputString := args[0]
-		bannerStyle := "standard.txt"
-		color.PrintAsciiArt(inputString, bannerStyle, "", "")
-	case 3:
-		// Format: go run . --color=<color> <substring to be colored> "something"
-		// Extract the color and substring values from the flags
+	if len(args) == 3 {
+		// Format: go run main.go --color=<color> <substring to be colored> "something"
 		substringValue := args[1]
 		inputString := args[2]
-		bannerStyle := "standard.txt"
-		colorValue := *colorFlag
-		color.PrintAsciiArt(colorValue, substringValue, inputString, bannerStyle)
-	default:
+		handleMultipleArguments(*colorFlag, substringValue, inputString, "standard.txt")
+	} else if len(args) == 4 {
+		// Format: go run main.go --color=<color> <substring to be colored> "something" <banner>
+		substringValue := args[1]
+		inputString := args[2]
+		bannerStyle := args[3]
+		handleMultipleArguments(*colorFlag, substringValue, inputString, bannerStyle+".txt")
+	} else {
 		fmt.Println("Usage: go run . [OPTION] [STRING]")
 		fmt.Println("\nEx: go run . --color=<color> <substring to be colored> \"something\"")
 		return
 	}
+}
+
+// func handleSingleArgument(inputString, bannerStyle, substringValue, colorValue string) {
+// 	color.PrintAsciiArt(inputString, bannerStyle, substringValue, colorValue)
+// }
+
+func handleMultipleArguments(colorValue, substringValue, inputString, bannerStyle string) {
+	color.PrintAsciiArt(colorValue, substringValue, inputString, bannerStyle)
 }

@@ -91,7 +91,7 @@ func GetLetterArray(char rune, bannerStyle string) []string {
 }
 
 // PrintAscii prints the ASCII art representation of a given string
-func PrintAsciiArt(str, bannerStyle, color, substring string) {
+func PrintAsciiArt(color, substring, str, bannerStyle string) {
 	// Get the ANSI escape code for the specified color
 	colorCode := GetColor(color)
 
@@ -99,7 +99,7 @@ func PrintAsciiArt(str, bannerStyle, color, substring string) {
 	printAsciiArt(str, bannerStyle, colorCode, substring)
 }
 
-func printAsciiArt(str, bannerStyle, color string, substring string) {
+func printAsciiArt(str, bannerStyle, color, substring string) {
 	lines := strings.Split(str, "\n")
 	letters := [][]string{}
 	for _, line := range lines {
